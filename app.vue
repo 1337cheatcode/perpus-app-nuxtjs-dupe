@@ -12,27 +12,63 @@ const alldoc = ref(new Object());
   alldoc.value[doc.id]=doc.data()
 });
 
-const bulanAngkaKeHuruf = {
-  1:'Januari',
-  2:'Februari',
-  3:'Maret',
-  4:'April',
-  5:'Mei',
-  6:'Juni',
-  7:'Juli',
-  8:'Agustus',
-  9:'September',
-  10:'Oktober',
-  11:'November',
-  12:'Desember',
+function tulisanTgl(tgl){
+  const bulanAngkaKeHuruf = {
+    0:'Januari',
+    1:'Februari',
+    2:'Maret',
+    3:'April',
+    4:'Mei',
+    5:'Juni',
+    6:'Juli',
+    7:'Agustus',
+    8:'September',
+    9:'Oktober',
+    10:'November',
+    11:'Desember',
+  };
+  return `${tgl.getDate()} ${bulanAngkaKeHuruf[tgl.getMonth()]} ${tgl.getFullYear()}`;
 }
+
+class simpleTgl {
+  tanggal;
+  bulan;
+  tahun;
+
+  constructor(tgl){
+    this.tanggal = tgl.getDate();
+    this.bulan = 1+tgl.getMonth();
+    this.tahun = tgl.getFullYear();
+  }
+
+  toString(){
+    return `${this.tanggal} ${simpleTgl.#bulanAngkaKeHuruf[this.bulan]} ${this.tahun}`;
+  }
+
+  static #bulanAngkaKeHuruf = {
+    0:'Januari',
+    1:'Februari',
+    2:'Maret',
+    3:'April',
+    4:'Mei',
+    5:'Juni',
+    6:'Juli',
+    7:'Agustus',
+    8:'September',
+    9:'Oktober',
+    10:'November',
+    11:'Desember',
+  }
+}
+
+
 </script>
 
 <template>
   <div v-if="ye">
     <ol>
       <span v-for="(data, id) in alldoc">
-        <li>{{ data.peminjam }} meminjam "{{ data.buku }}" pada tanggal {{ data.pinjam!=null?(tgl=>`${tgl.getDate()} ${bulanAngkaKeHuruf[1+tgl.getMonth()]} ${tgl.getFullYear()}`)(data.pinjam.waktu.toDate()):'tak tertulis' }}</li>
+        <li>{{ data.peminjam }} meminjam "{{ data.buku }}" pada tanggal {{ data.pinjam!=null?tulisanTgl(data.pinjam.waktu.toDate()):'tak tertulis' }}</li>
       </span>
     </ol>
   </div>
