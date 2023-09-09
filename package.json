@@ -7,9 +7,13 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "dependencies": {
+    "firebase": "^10.3",
+    "@chenfengyuan/vue-qrcode": "^2.0",
+    "qr-scanner": "^1.4"
+  },
   "devDependencies": {
-    "firebase": "^10.3.1",
-    "nuxt": "^3.7.0"
+    "nuxt": "^3.7"
   },
   "type": "module"
 }
