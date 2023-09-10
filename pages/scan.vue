@@ -2,20 +2,19 @@
 import {initializeApp} from "firebase/app"
 import {getFirestore} from "firebase/firestore"
 declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
-const db = getFirestore(initializeApp(JSON.parse(process.env.FIREBASE_CONFIG)));
 
 import QrScanner from 'qr-scanner';
 
 import { ref, watch, onMounted } from 'vue';
-const videoElement = ref<HTMLVideoElement>(),
-      text = ref<string>(),
-      hasCamera = ref<boolean>(),
+const videoElement = ref(new HTMLVideoElement()),
+      text = ref(''),
+      hasCamera = ref(true),
       hasFlash = ref(false),
-      cams = ref<QrScanner.Camera[]>(),
-      activeCamId = ref<string>();
+      cams = ref<QrScanner.Camera[]>([]),
+      activeCamId = ref('');
 let qrScanner:QrScanner;
 
-watch(activeCamId, (id)=>qrScanner.setCamera);
+watch(activeCamId, (id)=>qrScanner.setCamera(id));
 watch(text, ()=>navigator.vibrate(150))
 
 interface PinjamQRIntf {
@@ -23,13 +22,20 @@ interface PinjamQRIntf {
 }
 
 function storeData(res:QrScanner.ScanResult){
+  const validRes = ()=>{
+    alert('yeah');
+    qrScanner.stop();
+  };
+
   const ress = res.data.split(',');
   switch (ress[0]) {
     case 'p':
       console.log(ress[1],ress[2]);
+      validRes();
       break;
     case 'x':
       console.log(ress[1],ress[2]);
+      validRes();
       break;
     default:
       console.log(res.data)
@@ -45,6 +51,7 @@ onMounted(async ()=>{
     cams.value = await QrScanner.listCameras(true);
     
     try {
+      const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
       qrScanner = new QrScanner(
         videoElement.value!,
         storeData,

@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import {initializeApp} from "firebase/app";
 import {getFirestore, collection, query, where, orderBy, getDocs} from "firebase/firestore";
-declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
-const db = getFirestore(initializeApp(JSON.parse(process.env.FIREBASE_CONFIG)));
+//declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
+const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
 
 import { ref } from "vue";
 const alldocs = ref((await getDocs(

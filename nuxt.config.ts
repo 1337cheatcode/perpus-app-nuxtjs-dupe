@@ -3,6 +3,8 @@ export default defineNuxtConfig({
     preset: 'vercel-edge'
   },
   runtimeConfig: {
-    FIREBASE_CONFIG: process.env.FIREBASE_CONFIG
+    public: {
+      FIREBASE_CONFIG: process.env.FIREBASE_CONFIG
+    }
   }
 })
