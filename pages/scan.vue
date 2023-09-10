@@ -6,7 +6,7 @@ declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
 import QrScanner from 'qr-scanner';
 
 import { ref, watch, onMounted } from 'vue';
-const videoElement = ref(new HTMLVideoElement()),
+const videoElement = ref<HTMLVideoElement>(),
       text = ref(''),
       hasCamera = ref(true),
       hasFlash = ref(false),
