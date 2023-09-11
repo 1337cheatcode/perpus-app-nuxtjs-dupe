@@ -38,7 +38,9 @@ function storeData(res:QrScanner.ScanResult){
       validRes();
       break;
     default:
-      console.log(res.data)
+      console.log(res.data);
+      qrScanner.pause().then(()=>alert('try again'));
+      qrScanner.start();
       break;
   }
   qrScanner.stop();
@@ -70,7 +72,6 @@ onMounted(async ()=>{
       );
 
       await qrScanner.start();
-      if (videoElement.value!=undefined) console.log(videoElement.value);
 
       hasFlash.value = await qrScanner.hasFlash();
       activeCamId.value = cams.value[cams.value.length-1].id

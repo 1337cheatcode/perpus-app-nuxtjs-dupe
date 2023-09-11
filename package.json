@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "firebase": "^10.3",
-    "@chenfengyuan/vue-qrcode": "^2.0",
+    "lean-qr": "^2.3",
     "qr-scanner": "^1.4"
   },
   "devDependencies": {
