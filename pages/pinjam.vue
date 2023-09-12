@@ -5,12 +5,11 @@ import { ref } from 'vue';
 const peminjam = ref('')
 const buku = ref('')
 const qr = ref('')
-const canvas = ref<HTMLCanvasElement>();
+const qrcanv = ref<HTMLCanvasElement>();
 
 function ye(){
-  if (canvas.value!=undefined) {
-    qr.value = `p,${peminjam.value},${buku.value}`;
-    return generate(qr.value).toCanvas(canvas.value);
+  if (qrcanv.value!=undefined) {
+    return generate(qr.value=`p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
   }
 }
 </script>
@@ -22,7 +21,9 @@ function ye(){
     <label>Buku</label>
     <input v-model="buku">
     <button @click="ye">Pinjam!</button>
-    <canvas ref="canvas"></canvas>
+  </div>
+  <div>
+    <canvas ref="qrcanv"></canvas>
   </div>
 </template>
 

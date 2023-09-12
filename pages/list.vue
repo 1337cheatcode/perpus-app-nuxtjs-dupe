@@ -4,7 +4,20 @@ import {getFirestore, collection, query, where, orderBy, getDocs} from "firebase
 //declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
 const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
 
+import {generate} from 'lean-qr';
+const panjang = (id:string)=>{
+  if(qrcanv.value!=undefined){
+    return generate(`x,${id}`).toCanvas(qrcanv.value);
+  }
+}
+const kembali = (id:string)=>{
+  if(qrcanv.value!=undefined){
+    return generate(`k,${id}`).toCanvas(qrcanv.value);
+  }
+}
+
 import { ref } from "vue";
+const qrcanv = ref<HTMLCanvasElement>();
 const alldocs = ref((await getDocs(
                             query(
                               collection(db, 'peminjaman'),
@@ -77,9 +90,12 @@ class simpleTgl {
       <td class="nama">{{ data.data().peminjam }}</td>
       <td class="buku">{{ data.data().buku }}</td>
       <td class="tanggal">{{ data.data().pinjam!=null?tulisanTgl(data.data().pinjam.waktu.toDate()):'tak tercatat' }}</td>
-      <td class="aksi"><button @click="(e)=>console.log(data.id)">+</button> <button>v</button></td>
+      <td class="aksi"><button @click="(e)=>panjang(data.id)">+</button><button @click="(e)=>kembali(data.id)">v</button></td>
     </tr>
   </table>
+  <div>
+    <canvas ref="qrcanv"></canvas>
+  </div>
 </template>
 
 <style>
@@ -91,5 +107,11 @@ td#baru button{
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+}
+
+canvas{
+  width: 600;
+  width: 600;
+  image-rendering: pixelated;
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import {initializeApp} from "firebase/app"
-import {Firestore, Timestamp, addDoc, collection, getFirestore} from "firebase/firestore"
+import {Firestore, addDoc, collection, doc, getDoc, getFirestore, serverTimestamp, updateDoc} from "firebase/firestore"
 declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
 
 import QrScanner from 'qr-scanner';
@@ -67,19 +67,40 @@ onMounted(async ()=>{
         addDoc(collection(db,'peminjaman'),{
           peminjam:ress[1],
           buku:ress[2],
-          waktu:{
-            pinjam:Timestamp.now(),
+          pinjam:{
+            waktu:serverTimestamp(),
             staf: 'webscan'
           }
-        })
+        });
         validRes();
         break;
       case 'x':
-        console.log(ress[1],ress[2]);
+        console.log(ress[1]);
+        const t = await getDoc(doc(db,'peminjaman',ress[1]));
+        addDoc(collection(db,'peminjaman'),{
+          peminjam:t.get('peminjam'),
+          buku:t.get('buku'),
+          pinjam:{
+            waktu:serverTimestamp(),
+            staf: 'webscan'
+          }
+        });
+        updateDoc(doc(db,'peminjaman',ress[1]),{
+          kembali:{
+            waktu:serverTimestamp(),
+            staf: 'webscan'
+          }
+        });
         validRes();
         break;
       case 'k':
-        console.log(ress[1],ress[2]);
+        console.log(ress[1]);
+        updateDoc(doc(db,'peminjaman',ress[1]),{
+          kembali:{
+            waktu:serverTimestamp(),
+            staf: 'webscan'
+          }
+        });
         validRes();
       default:
         console.log(res.data);
@@ -87,7 +108,6 @@ onMounted(async ()=>{
         qrScanner.start();
         break;
     }
-    qrScanner.stop();
   }
 });
 </script>
