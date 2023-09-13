@@ -7,7 +7,6 @@ import QrScanner from 'qr-scanner';
 
 import { ref, watch, onMounted } from 'vue';
 const videoElement = ref<HTMLVideoElement>(),
-      text = ref(''),
       hasCamera = ref(true),
       hasFlash = ref(false),
       cams = ref<QrScanner.Camera[]>([]),
@@ -15,7 +14,6 @@ const videoElement = ref<HTMLVideoElement>(),
 let qrScanner:QrScanner, db:Firestore;
 
 watch(activeCamId, (id)=>qrScanner.setCamera(id));
-watch(text, ()=>navigator.vibrate(150))
 
 interface PinjamQRIntf {
 
@@ -54,38 +52,38 @@ onMounted(async ()=>{
   }
 
   async function storeData(res:QrScanner.ScanResult){
+    navigator.vibrate(150);
+    await qrScanner.stop();
     const validRes = ()=>{
-      qrScanner.stop();
       alert('yeah');
       useRouter().back();
     };
-
     const ress = res.data.split(',');
     switch (ress[0]) {
       case 'p':
-        console.log(ress[1],ress[2]);
-        addDoc(collection(db,'peminjaman'),{
+        await addDoc(collection(db,'peminjaman'),{
           peminjam:ress[1],
           buku:ress[2],
           pinjam:{
             waktu:serverTimestamp(),
             staf: 'webscan'
-          }
+          },
+          kembali:null
         });
         validRes();
         break;
       case 'x':
-        console.log(ress[1]);
         const t = await getDoc(doc(db,'peminjaman',ress[1]));
-        addDoc(collection(db,'peminjaman'),{
+        await addDoc(collection(db,'peminjaman'),{
           peminjam:t.get('peminjam'),
           buku:t.get('buku'),
           pinjam:{
             waktu:serverTimestamp(),
             staf: 'webscan'
-          }
+          },
+          kembali:null
         });
-        updateDoc(doc(db,'peminjaman',ress[1]),{
+        await updateDoc(doc(db,'peminjaman',ress[1]),{
           kembali:{
             waktu:serverTimestamp(),
             staf: 'webscan'
@@ -94,17 +92,17 @@ onMounted(async ()=>{
         validRes();
         break;
       case 'k':
-        console.log(ress[1]);
-        updateDoc(doc(db,'peminjaman',ress[1]),{
+        await updateDoc(doc(db,'peminjaman',ress[1]),{
           kembali:{
             waktu:serverTimestamp(),
             staf: 'webscan'
           }
         });
         validRes();
+        break;
       default:
         console.log(res.data);
-        qrScanner.pause().then(()=>alert('try again'));
+        alert('try again');
         qrScanner.start();
         break;
     }
@@ -113,7 +111,6 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <div>bro it works {{ text }}</div>
   <div>
     <div v-if="cams && cams.length > 1">
       <label for="cams">
