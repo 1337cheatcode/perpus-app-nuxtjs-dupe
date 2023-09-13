@@ -76,26 +76,30 @@ class simpleTgl {
 </script>
 
 <template>
-  <table>
-    <tr>
-      <th>Nama</th>
-      <th>Buku</th>
-      <th>Tanggal</th>
-      <th>Aksi</th>
-    </tr>
-    <tr>
-      <td id="baru" colspan="4"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td>
-    </tr>
-    <tr v-for="data in alldocs">
-      <td class="nama">{{ data.data().peminjam }}</td>
-      <td class="buku">{{ data.data().buku }}</td>
-      <td class="tanggal">{{ data.data().pinjam!=null?tulisanTgl(data.data().pinjam.waktu.toDate()):'tak tercatat' }}</td>
-      <td class="aksi"><button @click="(e)=>panjang(data.id)">+</button><button @click="(e)=>kembali(data.id)">v</button></td>
-    </tr>
-  </table>
-  <div>
-    <canvas ref="qrcanv"></canvas>
-  </div>
+  <main>
+    <div>
+      <table>
+        <tr>
+          <th>Nama</th>
+          <th>Buku</th>
+          <th>Tanggal</th>
+          <th>Aksi</th>
+        </tr>
+        <tr>
+          <td id="baru" colspan="4"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td>
+        </tr>
+        <tr v-for="data in alldocs">
+          <td class="nama">{{ data.data().peminjam }}</td>
+          <td class="buku">{{ data.data().buku }}</td>
+          <td class="tanggal">{{ data.data().pinjam!=null?tulisanTgl(data.data().pinjam.waktu.toDate()):'tak tercatat' }}</td>
+          <td class="aksi"><button @click="(e)=>panjang(data.id)">+</button><button @click="(e)=>kembali(data.id)">v</button></td>
+        </tr>
+      </table>
+    </div>
+    <div id="qr">
+      <canvas ref="qrcanv" />
+    </div>
+  </main>
 </template>
 
 <style>
@@ -108,10 +112,25 @@ td#baru button{
   width: 100%;
   height: 100%;
 }
-
-canvas{
-  width: 600;
-  width: 600;
-  image-rendering: pixelated;
+/*
+main>*{
+  float:left;
+  margin: auto;
 }
+
+main>*:last-child{
+  float:right;
+}
+
+@media screen and (max-aspect-ratio: 1) {
+  main>*,main>*:last-child{
+    float: unset;
+    width: unset;
+  }
+
+  canvas{
+    display:block;
+  }
+}
+*/
 </style>
