@@ -10,7 +10,8 @@ const videoElement = ref<HTMLVideoElement>(),
       hasCamera = ref(true),
       hasFlash = ref(false),
       cams = ref<QrScanner.Camera[]>([]),
-      activeCamId = ref('');
+      activeCamId = ref(''),
+      multiScanStopper = ref(false);
 let qrScanner:QrScanner, db:Firestore;
 
 watch(activeCamId, (id)=>qrScanner.setCamera(id));
@@ -40,7 +41,8 @@ onMounted(async ()=>{
               height:videoElement.videoHeight
             } as QrScanner.ScanRegion
           },
-          highlightCodeOutline: true
+          highlightCodeOutline: true,
+          highlightScanRegion:true
         }
       );
 
@@ -52,6 +54,8 @@ onMounted(async ()=>{
   }
 
   async function storeData(res:QrScanner.ScanResult){
+    if(multiScanStopper.value)return;
+    multiScanStopper.value=true;
     navigator.vibrate(150);
     await qrScanner.stop();
     const validRes = ()=>{
@@ -103,6 +107,7 @@ onMounted(async ()=>{
       default:
         console.log(res.data);
         alert('try again');
+        multiScanStopper.value=false;
         qrScanner.start();
         break;
     }
@@ -111,7 +116,7 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <div>
+  <main>
     <div v-if="cams && cams.length > 1">
       <label for="cams">
         [ ◉¯]
@@ -119,9 +124,20 @@ onMounted(async ()=>{
       <select v-model="activeCamId" name="cams" id="cams">
         <option v-for="c in cams" :value="c.id">{{ c.label }}</option>
       </select>
-      <button v-if="hasFlash" @click="qrScanner.toggleFlash" ></button>
+      <button v-if="hasFlash" @click="qrScanner.toggleFlash" >*</button>
     </div>
 
     <video v-if="hasCamera" ref="videoElement"></video>
-  </div>
+  </main>
 </template>
+
+<style>
+video {
+  width: 80vw;
+  object-fit: contain;
+}
+
+main {
+  flex-direction: column;
+}
+</style>
