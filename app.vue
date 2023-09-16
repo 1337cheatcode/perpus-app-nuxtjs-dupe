@@ -1,13 +1,19 @@
 <template>
   <div>
-    <NuxtLink to="/list">list</NuxtLink>
-    <NuxtLink to="/pinjam">pinjam</NuxtLink>
+    <header>
+      <NuxtLink to="/list">list</NuxtLink>
+      <NuxtLink to="/pinjam">pinjam</NuxtLink>
+    </header>
     <NuxtPage />
   </div>
 </template>
 
 <style>
-div a{
+header {
+  border-bottom: 4px ridge;
+}
+
+div>header a{
   padding: 0 .25vw;
 }
 
@@ -20,7 +26,15 @@ canvas {
 main{
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+main>div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width:100%;
 }
 
 @media screen and (max-aspect-ratio:1.25){
@@ -31,6 +45,10 @@ main{
 
   main{
     flex-direction: column;
+  }
+
+  main * {
+    width: auto;
   }
   /*
   main{
