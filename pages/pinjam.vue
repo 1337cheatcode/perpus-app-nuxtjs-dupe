@@ -25,7 +25,7 @@ function ye(){
     getDocs(dbQuery).then((docs)=>{
       if(!docs.empty){
         alert('anda masih pinjem cuy');
-        navigateTo('list');
+        navigateTo('/list');
       }else if(qrcanv.value!=undefined){
         const snap = onSnapshot(dbQuery,(qs)=>{
           if(qs.docs.length==1){
