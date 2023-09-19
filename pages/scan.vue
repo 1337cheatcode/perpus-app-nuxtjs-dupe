@@ -16,10 +16,6 @@ let qrScanner:QrScanner, db:Firestore;
 
 watch(activeCamId, (id)=>qrScanner.setCamera(id));
 
-interface PinjamQRIntf {
-
-}
-
 onMounted(async ()=>{
   hasCamera.value = await QrScanner.hasCamera();
 
