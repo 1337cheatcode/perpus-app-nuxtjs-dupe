@@ -3,7 +3,3 @@
     redirect: '/list'
   })
 </script>
-
-<template>
-  <div></div>
-</template>
