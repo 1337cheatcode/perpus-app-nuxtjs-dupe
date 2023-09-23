@@ -133,6 +133,7 @@ const isTelat = (waktu:Date)=>
           </tr>
         </tbody>
       </table>
+      <span class="note">note: + perpanjang, v kembalikan</span>
     </div>
     <div id="qr">
       <canvas ref="qrcanv"></canvas>
@@ -174,6 +175,10 @@ td.waktu {
 td.telat {
   border-left:unset;
   padding-left:.0625rem;
+}
+
+table+.note{
+  font-size: xx-small;
 }
 /*
 main>*{
