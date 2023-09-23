@@ -95,6 +95,17 @@ const deadlineBalik = (waktu:Timestamp|undefined)=>
                           {backgroundColor:`hsl(${1/3+Math.max(waktu.toMillis()-now.toMillis(),-604800000)/(3*604800000)}turn 100% 50%)`}:
                           {})
                         (Timestamp.now()) as StyleValue;
+
+const isTelat = (waktu:Date)=>
+                  (((d:Date)=>
+                    !(
+                    new Date(d.getFullYear(),d.getMonth(),d.getDate()).valueOf()
+                    -
+                    new Date(waktu.getFullYear(),waktu.getMonth(),waktu.getDate()).valueOf()
+                    <
+                    604800000
+                    ))
+                  (new Date()))?{}:{visibility:"hidden"} as StyleValue;
 </script>
 
 <template>
@@ -117,7 +128,7 @@ const deadlineBalik = (waktu:Timestamp|undefined)=>
             <td class="nama">{{ doc.data.peminjam }}</td>
             <td class="buku">{{ doc.data.buku }}</td>
             <td class="waktu" :style="deadlineBalik(doc.data.pinjam.waktu)">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
-            <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><span style="visibility:hidden;">❌</span></td>
+            <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><span :style="isTelat(doc.data.pinjam.waktu.toDate())">❌</span></td>
             <td class="aksi"><button @click="(e)=>panjang(doc.id)">+</button><button @click="(e)=>kembali(doc.id)">v</button></td>
           </tr>
         </tbody>
