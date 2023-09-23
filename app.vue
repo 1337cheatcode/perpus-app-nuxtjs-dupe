@@ -9,6 +9,11 @@
 </template>
 
 <style>
+body {
+  margin-left:0;
+  margin-right:0;
+}
+
 header {
   border-bottom: 4px ridge;
 }
