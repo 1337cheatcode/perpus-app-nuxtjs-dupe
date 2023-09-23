@@ -3,6 +3,7 @@
     <header>
       <NuxtLink to="/list">list</NuxtLink>
       <NuxtLink to="/pinjam">pinjam</NuxtLink>
+      <NuxtLink to="/history">riwayat</NuxtLink>
     </header>
     <NuxtPage />
   </div>
