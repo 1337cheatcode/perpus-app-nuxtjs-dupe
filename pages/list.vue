@@ -105,18 +105,19 @@ const deadlineBalik = (waktu:Timestamp|undefined)=>
           <tr>
             <th id="th-nama">Nama</th>
             <th id="th-buku">Buku</th>
-            <th id="th-waktu">Tanggal</th>
+            <th id="th-waktu" colspan="2">Tanggal</th>
             <th id="th-aksi">Aksi</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td id="baru" colspan="4"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td>
+            <td id="baru" colspan="5"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td>
           </tr>
           <tr v-for="doc in alldocs">
             <td class="nama">{{ doc.data.peminjam }}</td>
             <td class="buku">{{ doc.data.buku }}</td>
-            <td class="tanggal" :style="deadlineBalik(doc.data.pinjam.waktu)">{{ doc.data.pinjam!=null?tulisanTgl(doc.data.pinjam.waktu.toDate()):'tak tercatat' }}</td>
+            <td class="waktu" :style="deadlineBalik(doc.data.pinjam.waktu)">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
+            <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><span style="visibility:hidden;">❌</span></td>
             <td class="aksi"><button @click="(e)=>panjang(doc.id)">+</button><button @click="(e)=>kembali(doc.id)">v</button></td>
           </tr>
         </tbody>
@@ -152,6 +153,16 @@ td#baru button{
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+}
+
+td.waktu {
+  border-right:unset;
+  padding-right:.0625rem;
+}
+
+td.telat {
+  border-left:unset;
+  padding-left:.0625rem;
 }
 /*
 main>*{
