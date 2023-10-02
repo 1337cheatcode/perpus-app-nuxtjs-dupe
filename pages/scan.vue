@@ -37,8 +37,7 @@ onMounted(async ()=>{
               height:videoElement.videoHeight
             } as QrScanner.ScanRegion
           },
-          highlightCodeOutline: true,
-          highlightScanRegion:true
+          highlightCodeOutline: true
         }
       );
 
@@ -135,5 +134,11 @@ video {
 
 main {
   flex-direction: column;
+}
+
+@media screen and (max-aspect-ratio:1.25) {
+  video {
+    width: 90vw
+  }
 }
 </style>
