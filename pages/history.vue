@@ -10,7 +10,7 @@ function ExtractData(d:{id:string,data:DocumentData}){
 }
 
 //TODO: bikin xl download
-//TODO: tabel merge 2 baris (untuk waktu dan staf peminjam)
+//TODO: tabel merge 2 baris (untuk waktu dan staf peminjam) dan keterlambatan
 
 const bulanAngkaKeHurufDict = {
     0:'Januari',
@@ -57,10 +57,17 @@ function keyListen(ev:KeyboardEvent){
       <table>
         <thead>
           <tr>
-            <th id="th-nama">Nama</th>
-            <th id="th-buku">Buku</th>
-            <th id="th-waktu">Tanggal Pinjam</th>
-            <th id="th-waktu">Tanggal Kembali</th>
+            <th id="th-nama" rowspan="2">Nama</th>
+            <th id="th-buku" rowspan="2">Buku</th>
+            <th id="th-pinjam" colspan="2">Tanggal Pinjam</th>
+            <th id="th-kempali" colspan="2">Tanggal Kembali</th>
+            <th id="th-telat" rowspan="2">Telat</th>
+          </tr>
+          <tr>
+            <th id="th-pinjam-waktu">Tanggal</th>
+            <th id="th-pinjam-staf">Staf</th>
+            <th id="th-kembali-waktu">Tanggal</th>
+            <th id="th-kembali-staf">Staf</th>
           </tr>
         </thead>
         <tbody>
@@ -68,7 +75,10 @@ function keyListen(ev:KeyboardEvent){
             <td class="nama">{{ doc.data.peminjam }}</td>
             <td class="buku">{{ doc.data.buku }}</td>
             <td class="waktu pinjam">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
+            <td class="staf pinjam">{{ doc.data.pinjam.staf }}</td>
             <td class="waktu kembali">{{ doc.data.kembali?tulisanTgl(doc.data.kembali.waktu.toDate()):'' }}</td>
+            <td class="staf kembali">{{ doc.data.kembali?doc.data.kembali.staf:'' }}</td>
+            <td class="telat">v</td>
           </tr>
         </tbody>
       </table>
