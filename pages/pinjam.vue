@@ -1,14 +1,17 @@
 <script setup lang="tsx">
 import { initializeApp } from "firebase/app";
-import { getFirestore, onSnapshot, collection, query, where, getDocs, QuerySnapshot } from "firebase/firestore";
+import { getFirestore, onSnapshot, collection, query, where, getDocs } from "firebase/firestore";
 
 import { generate } from "lean-qr";
 
 import { ref } from 'vue';
-const peminjam = ref(''),
-  buku = ref(''),
-  qr = ref(''),
-  qrcanv = ref<HTMLCanvasElement>();
+
+const qs = useRoute().query,
+      peminjam = ref(qs.nama?qs.nama:''),
+      buku = ref(qs.buku?qs.buku:''),
+      qr = ref(''),
+      qrcanv = ref<HTMLCanvasElement>(),
+      urlPusher = useRouter().push;
 
 function yey(ev:KeyboardEvent){
   if(ev.key=="Enter")ye();
@@ -38,6 +41,12 @@ function ye(){
     });
   }
 }
+
+watch([peminjam,buku],function([p,b]){
+  urlPusher({path:'pinjam',query:b?(p?{nama:p,buku:b}:{buku:b}):(p?{nama:p}:{})})
+});
+//TODO: shortcut pinjam buku gitu gtw sy -> queryString buku
+//TODO: encode kode QR
 </script>
 
 <template>
