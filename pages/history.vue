@@ -46,6 +46,10 @@ function keyListen(ev:KeyboardEvent){
   console.log(ev);
   if(mainFocus.value)mainFocus.value.focus();
 }
+
+const isTelat = (pinjam:Date,kembali:Date)=>!(new Date(kembali.getFullYear(),kembali.getMonth(),kembali.getDate()).valueOf() // sekarang
+                                              -new Date(pinjam.getFullYear(),pinjam.getMonth(),pinjam.getDate()).valueOf() // pinjam
+                                              <604800000) // a week
 </script>
 
 <template>
@@ -78,7 +82,7 @@ function keyListen(ev:KeyboardEvent){
             <td class="staf pinjam">{{ doc.data.pinjam.staf }}</td>
             <td class="waktu kembali">{{ doc.data.kembali?tulisanTgl(doc.data.kembali.waktu.toDate()):'' }}</td>
             <td class="staf kembali">{{ doc.data.kembali?doc.data.kembali.staf:'' }}</td>
-            <td class="telat">v</td>
+            <td class="telat"><span v-if="isTelat(doc.data.pinjam.waktu.toDate(),doc.data.kembali?doc.data.kembali.waktu.toDate():new Date())">v</span></td>
           </tr>
         </tbody>
       </table>

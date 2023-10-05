@@ -96,16 +96,12 @@ const deadlineBalik = (waktu:Timestamp|undefined)=>
                           {})
                         (Timestamp.now()) as StyleValue;
 
-const isTelat = (waktu:Date)=>
-                  (((d:Date)=>
-                    !(
-                    new Date(d.getFullYear(),d.getMonth(),d.getDate()).valueOf() // sekarang
-                    -
-                    new Date(waktu.getFullYear(),waktu.getMonth(),waktu.getDate()).valueOf() // pinjam
-                    <
-                    604800000 // a week
-                    ))
-                  (new Date()))?{backgroundColor:'black'}:{visibility:"hidden"} as StyleValue;
+function isTelat(waktu:Date){
+  const d:Date = new Date();
+  return !(new Date(d.getFullYear(),d.getMonth(),d.getDate()).valueOf() // sekarang
+          -new Date(waktu.getFullYear(),waktu.getMonth(),waktu.getDate()).valueOf() // pinjam
+          <604800000) // a week
+}
 
 //TODO: desktop shortcut
 </script>
@@ -130,7 +126,7 @@ const isTelat = (waktu:Date)=>
             <td class="nama">{{ doc.data.peminjam }}</td>
             <td class="buku">{{ doc.data.buku }}</td>
             <td class="waktu" :style="deadlineBalik(doc.data.pinjam.waktu)">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
-            <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><mark :style="isTelat(doc.data.pinjam.waktu.toDate())">❌</mark></td>
+            <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><mark v-if="isTelat(doc.data.pinjam.waktu.toDate())" style="background-color: black;">❌</mark></td>
             <td class="aksi"><button @click="(e)=>panjang(doc.id)">+</button><button @click="(e)=>kembali(doc.id)">v</button></td>
           </tr>
         </tbody>
