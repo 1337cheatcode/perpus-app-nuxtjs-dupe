@@ -30,10 +30,12 @@ function ye(){
         alert('anda masih pinjem cuy');
         navigateTo('/list');
       }else if(qrcanv.value!=undefined){
-        const snap = onSnapshot(dbQuery,(qs)=>{
-          if(qs.docs.length==1){
-            navigateTo('/list');
+        const snap = onSnapshot(dbQuery,(qsnap)=>{
+          if(qsnap.docs.length==1){
             snap();
+            //alert(qsnap.docs[0].id);
+            alert(`Peminjaman terdaftar\n${peminjam.value}\n${buku.value}`)
+            navigateTo('/list');
           }
         });
         generate(qr.value=`p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
@@ -47,6 +49,7 @@ watch([peminjam,buku],function([p,b]){
 });
 //TODO: shortcut pinjam buku gitu gtw sy -> queryString buku
 //TODO: encode kode QR
+//TODO: add alert
 </script>
 
 <template>
