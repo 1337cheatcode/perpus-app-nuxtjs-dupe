@@ -24,8 +24,8 @@ div>header a{
 }
 
 canvas {
-  width: 75vmin;
-  height: 75vmin;
+  width: 80vmin;
+  height: 80vmin;
   image-rendering: pixelated;
 }
 
@@ -33,6 +33,11 @@ main{
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+main * {
+  width: auto;
 }
 
 main>div{
@@ -43,18 +48,14 @@ main>div{
   width:100%;
 }
 
-@media screen and (max-aspect-ratio:1.25){
+@media screen and (min-aspect-ratio:1.25){
   canvas {
-    width: 80vmin;
-    height: 80vmin;
+    width: 75vmin;
+    height: 75vmin;
   }
 
   main{
-    flex-direction: column;
-  }
-
-  main * {
-    width: auto;
+    flex-direction: row;
   }
   /*
   main{
