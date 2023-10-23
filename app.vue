@@ -23,12 +23,6 @@ div>header a{
   padding: 0 .25vw;
 }
 
-canvas {
-  width: 80vmin;
-  height: 80vmin;
-  image-rendering: pixelated;
-}
-
 main{
   display: flex;
   align-items: center;
@@ -46,6 +40,12 @@ main>div{
   align-items: center;
   justify-content: center;
   width:100%;
+}
+
+canvas {
+  width: 80vmin;
+  height: 80vmin;
+  image-rendering: pixelated;
 }
 
 @media screen and (min-aspect-ratio:1.25){

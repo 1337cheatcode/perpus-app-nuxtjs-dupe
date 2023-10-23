@@ -4,13 +4,14 @@ import {getFirestore,getDocs,collection,DocumentData} from "firebase/firestore";
 const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
 const alldocs = ref((await getDocs(collection(db, 'peminjaman')))
                             .docs .map((d)=>({id:d.id,data:d.data()}))
-                                  .sort((a,b)=>a.data.pinjam.waktu-b.data.pinjam.waktu));
+                                  .sort((a,b)=>b.data.pinjam.waktu-a.data.pinjam.waktu));
 function ExtractData(d:{id:string,data:DocumentData}){
   return <div>{d.id}, {d.data}</div>;
 }
 
 //TODO: bikin xl download
 //TODO: tabel merge 2 baris (untuk waktu dan staf peminjam) dan keterlambatan
+//TODO: reverse urutan bulans
 
 const bulanAngkaKeHurufDict = {
     0:'Januari',
@@ -43,21 +44,43 @@ const docsPadaBulan = computed(()=>alldocs.value.filter(d=>((date,b,t)=>date<new
 
 const mainFocus = ref<HTMLSelectElement>();
 function keyListen(ev:KeyboardEvent){
-  console.log(ev);
-  if(mainFocus.value)mainFocus.value.focus();
+  mainFocus.value?.focus();
 }
+
+const antiblur = (ev:FocusEvent)=>mainFocus.value?.focus();
 
 const isTelat = (pinjam:Date,kembali:Date)=>!(new Date(kembali.getFullYear(),kembali.getMonth(),kembali.getDate()).valueOf() // sekarang
                                               -new Date(pinjam.getFullYear(),pinjam.getMonth(),pinjam.getDate()).valueOf() // pinjam
                                               <604800000) // a week
+
+import {utils,writeFileXLSX} from 'xlsx'
+function saveExcel(ev:MouseEvent){
+  let ws = utils.aoa_to_sheet([
+    ['Nama','Buku','Tanggal Pinjam',,'Tanggal Kembali',,'Telat'],
+    [,,'Tanggal','Staf','Tanggal','Staf']
+  ].concat(docsPadaBulan.value.map((doc,i)=>((d)=>
+    [d.peminjam,d.buku,d.pinjam.waktu.toDate(),d.pinjam.staf,d.kembali?d.kembali.waktu.toDate():null,d.kembali?d.kembali.staf:null,`=IF(FLOOR(C${3+i};1)+7<=FLOOR(E${3+i};1);"v";"")`]
+  )(doc.data))));
+  //const sexp = utils.json_to_sheet(docsPadaBulan.value.map(d=>d.data));
+  const xlexp = utils.book_new();
+  utils.book_append_sheet(xlexp,ws);
+  return writeFileXLSX(xlexp,'cobates.xlsx')
+}
+
+onMounted(()=>{
+  mainFocus.value?.focus();
+})
 </script>
 
 <template>
-  <main>
+  <main @keydown="keyListen">
     <div>
-      <select ref="mainFocus" v-model="bulan">
-        <option v-for="b in bulans">{{ b }}</option>
-      </select>
+      <div>
+        <select ref="mainFocus" v-model="bulan" @blur="antiblur">
+          <option v-for="b in bulans">{{ b }}</option>
+        </select>
+        <button @click="saveExcel" :disabled="bulan=='Semua'">Download .xl</button>
+      </div>
       <table>
         <thead>
           <tr>
