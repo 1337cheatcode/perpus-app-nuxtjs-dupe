@@ -60,7 +60,7 @@ onMounted(async ()=>{
     const ress = res.data.split(',');
     switch (ress[0]) {
       case 'p':
-        await addDoc(collection(db,'peminjaman'),{
+        await addDoc(collection(db,'peminjaman barang'),{
           peminjam:ress[1],
           buku:ress[2],
           pinjam:{
@@ -72,7 +72,7 @@ onMounted(async ()=>{
         validRes();
         break;
       case 'x':
-        const t = await getDoc(doc(db,'peminjaman',ress[1]));
+        const t = await getDoc(doc(db,'peminjaman barang',ress[1]));
         await addDoc(collection(db,'peminjaman'),{
           peminjam:t.get('peminjam'),
           buku:t.get('buku'),
@@ -82,7 +82,7 @@ onMounted(async ()=>{
           },
           kembali:null
         });
-        await updateDoc(doc(db,'peminjaman',ress[1]),{
+        await updateDoc(doc(db,'peminjaman barang',ress[1]),{
           kembali:{
             waktu:serverTimestamp(),
             staf: 'webscan'
@@ -91,7 +91,7 @@ onMounted(async ()=>{
         validRes();
         break;
       case 'k':
-        await updateDoc(doc(db,'peminjaman',ress[1]),{
+        await updateDoc(doc(db,'peminjaman barang',ress[1]),{
           kembali:{
             waktu:serverTimestamp(),
             staf: 'webscan'

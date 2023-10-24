@@ -2,7 +2,7 @@
 import {initializeApp} from "firebase/app";
 import {getFirestore,getDocs,collection,DocumentData} from "firebase/firestore";
 const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
-const alldocs = ref((await getDocs(collection(db, 'peminjaman')))
+const alldocs = ref((await getDocs(collection(db, 'peminjaman barang')))
                             .docs .map((d)=>({id:d.id,data:d.data()}))
                                   .sort((a,b)=>b.data.pinjam.waktu-a.data.pinjam.waktu));
 function ExtractData(d:{id:string,data:DocumentData}){
@@ -56,10 +56,10 @@ const isTelat = (pinjam:Date,kembali:Date)=>!(new Date(kembali.getFullYear(),kem
 import {utils,writeFileXLSX} from 'xlsx'
 function saveExcel(ev:MouseEvent){
   let ws = utils.aoa_to_sheet([
-    ['Nama','Buku','Tanggal Pinjam',,'Tanggal Kembali',,'Telat'],
+    ['Nama','Barang','Tanggal Pinjam',,'Tanggal Kembali',,'Telat'],
     [,,'Tanggal','Staf','Tanggal','Staf']
   ].concat(docsPadaBulan.value.map((doc,i)=>((d)=>
-    [d.peminjam,d.buku,d.pinjam.waktu.toDate(),d.pinjam.staf,d.kembali?d.kembali.waktu.toDate():null,d.kembali?d.kembali.staf:null,`=IF(FLOOR(C${3+i};1)+7<=FLOOR(E${3+i};1);"v";"")`]
+    [d.peminjam,d.Barang,d.pinjam.waktu.toDate(),d.pinjam.staf,d.kembali?d.kembali.waktu.toDate():null,d.kembali?d.kembali.staf:null,`=IF(FLOOR(C${3+i};1)+7<=FLOOR(E${3+i};1);"v";"")`]
   )(doc.data))));
   //const sexp = utils.json_to_sheet(docsPadaBulan.value.map(d=>d.data));
   const xlexp = utils.book_new();
@@ -85,7 +85,7 @@ onMounted(()=>{
         <thead>
           <tr>
             <th id="th-nama" rowspan="2">Nama</th>
-            <th id="th-buku" rowspan="2">Buku</th>
+            <th id="th-Barang" rowspan="2">Barang</th>
             <th id="th-pinjam" colspan="2">Tanggal Pinjam</th>
             <th id="th-kempali" colspan="2">Tanggal Kembali</th>
             <th id="th-telat" rowspan="2">Telat</th>
@@ -100,7 +100,7 @@ onMounted(()=>{
         <tbody>
           <tr v-for="doc in bulan=='Semua'?alldocs:docsPadaBulan">
             <td class="nama">{{ doc.data.peminjam }}</td>
-            <td class="buku">{{ doc.data.buku }}</td>
+            <td class="Barang">{{ doc.data.Barang }}</td>
             <td class="waktu pinjam">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
             <td class="staf pinjam">{{ doc.data.pinjam.staf }}</td>
             <td class="waktu kembali">{{ doc.data.kembali?tulisanTgl(doc.data.kembali.waktu.toDate()):'' }}</td>

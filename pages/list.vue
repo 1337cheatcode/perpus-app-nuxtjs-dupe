@@ -18,14 +18,14 @@ import { StyleValue } from "vue";
 const panjang = (id:string)=>{
   if(snap)snap();
   if(qrcanv.value!=undefined){
-    snap = onSnapshot(doc(db,'peminjaman',id),onSnap(id));
+    snap = onSnapshot(doc(db,'peminjaman barang',id),onSnap(id));
     return generate(`x,${id}`).toCanvas(qrcanv.value);
   }
 }
 const kembali = (id:string)=>{
   if(snap)snap();
   if(qrcanv.value!=undefined){
-    snap = onSnapshot(doc(db,'peminjaman',id),onSnap(id));
+    snap = onSnapshot(doc(db,'peminjaman barang',id),onSnap(id));
     return generate(`k,${id}`).toCanvas(qrcanv.value);
   }
 }
@@ -34,7 +34,7 @@ import { ref } from "vue";
 const qrcanv = ref<HTMLCanvasElement>();
 const alldocs = ref((await getDocs(
                             query(
-                              collection(db, 'peminjaman'),
+                              collection(db, 'peminjaman barang'),
                               where('kembali','==',null)
                             )
                           )).docs.map((d)=>({id:d.id,data:d.data()}))
@@ -113,7 +113,7 @@ function isTelat(waktu:Date){
         <thead>
           <tr>
             <th id="th-nama">Nama</th>
-            <th id="th-buku">Buku</th>
+            <th id="th-barang">Barang</th>
             <th id="th-waktu" colspan="2">Tanggal</th>
             <th id="th-aksi">Aksi</th>
           </tr>
@@ -124,7 +124,7 @@ function isTelat(waktu:Date){
           </tr>
           <tr v-for="doc in alldocs">
             <td class="nama">{{ doc.data.peminjam }}</td>
-            <td class="buku">{{ doc.data.buku }}</td>
+            <td class="barang">{{ doc.data.barang }}</td>
             <td class="waktu" :style="deadlineBalik(doc.data.pinjam.waktu)">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
             <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><mark v-if="isTelat(doc.data.pinjam.waktu.toDate())" style="background-color: black;">❌</mark></td>
             <td class="aksi"><button @click="(e)=>panjang(doc.id)">+</button><button @click="(e)=>kembali(doc.id)">v</button></td>

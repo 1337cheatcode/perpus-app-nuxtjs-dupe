@@ -8,7 +8,7 @@ import { ref } from 'vue';
 
 const qs = useRoute().query,
       peminjam = ref(qs.nama?qs.nama:''),
-      buku = ref(qs.buku?qs.buku:''),
+      barang = ref(qs.barang?qs.barang:''),
       qr = ref(''),
       qrcanv = ref<HTMLCanvasElement>(),
       urlPusher = useRouter().push;
@@ -18,10 +18,10 @@ function yey(ev:KeyboardEvent){
 }
 
 function ye(){
-  if(peminjam.value&&buku.value){
+  if(peminjam.value&&barang.value){
     const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
     const dbQuery = query(
-                      collection(db,'peminjaman'),
+                      collection(db,'peminjaman barang'),
                       where('peminjam','==',peminjam.value),
                       where('kembali','==',null)
                     );
@@ -34,18 +34,18 @@ function ye(){
           if(qsnap.docs.length==1){
             snap();
             //alert(qsnap.docs[0].id);
-            alert(`Peminjaman terdaftar\n${peminjam.value}\n${buku.value}`)
+            alert(`Peminjaman terdaftar\n${peminjam.value}\n${barang.value}`)
             navigateTo('/list');
           }
         });
-        generate(qr.value=`p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
+        generate(qr.value=`p,${peminjam.value},${barang.value}`).toCanvas(qrcanv.value);
       }
     });
   }
 }
 
-watch([peminjam,buku],function([p,b]){
-  urlPusher({path:'pinjam',query:b?(p?{nama:p,buku:b}:{buku:b}):(p?{nama:p}:{})})
+watch([peminjam,barang],function([p,b]){
+  urlPusher({path:'pinjam',query:b?(p?{nama:p,barang:b}:{barang:b}):(p?{nama:p}:{})})
 });
 //TODO: shortcut pinjam buku gitu gtw sy -> queryString buku
 //TODO: encode kode QR
@@ -57,8 +57,8 @@ watch([peminjam,buku],function([p,b]){
     <div class="form" @keydown="yey">
       <label>Nama</label>
       <input v-model="peminjam" required>
-      <label>Buku</label>
-      <input v-model="buku" required>
+      <label>Barang</label>
+      <input v-model="barang" required>
       <button @click="ye">Pinjam!</button>
     </div>
     <div id="qr">
