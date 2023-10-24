@@ -10,7 +10,8 @@
   "dependencies": {
     "firebase": "^10.3",
     "lean-qr": "^2.3",
-    "qr-scanner": "^1.4"
+    "qr-scanner": "^1.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   },
   "devDependencies": {
     "nuxt": "^3.7"
