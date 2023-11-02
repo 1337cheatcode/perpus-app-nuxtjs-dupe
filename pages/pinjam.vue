@@ -35,8 +35,8 @@ function ye(){
           }
         });
         addDoc(collection(db,'peminjaman barang'),{
-          peminjam:peminjam,
-          barang:barang,
+          peminjam:peminjam.value,
+          barang:barang.value,
           pinjam:{
             waktu:serverTimestamp(),
             staf: 'webscan'
