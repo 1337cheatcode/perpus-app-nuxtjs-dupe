@@ -1,16 +1,12 @@
 <script setup lang="tsx">
 import { initializeApp } from "firebase/app";
-import { getFirestore, onSnapshot, collection, query, where, getDocs } from "firebase/firestore";
-
-import { generate } from "lean-qr";
+import { getFirestore, onSnapshot, collection, query, where, getDocs, serverTimestamp, addDoc } from "firebase/firestore";
 
 import { ref } from 'vue';
 
 const qs = useRoute().query,
       peminjam = ref(qs.nama?qs.nama:''),
       barang = ref(qs.barang?qs.barang:''),
-      qr = ref(''),
-      qrcanv = ref<HTMLCanvasElement>(),
       urlPusher = useRouter().push;
 
 function yey(ev:KeyboardEvent){
@@ -29,7 +25,7 @@ function ye(){
       if(!docs.empty){
         alert('anda masih pinjem cuy');
         navigateTo('/list');
-      }else if(qrcanv.value!=undefined){
+      }else{
         const snap = onSnapshot(dbQuery,(qsnap)=>{
           if(qsnap.docs.length==1){
             snap();
@@ -38,7 +34,15 @@ function ye(){
             navigateTo('/list');
           }
         });
-        generate(qr.value=`p,${peminjam.value},${barang.value}`).toCanvas(qrcanv.value);
+        addDoc(collection(db,'peminjaman barang'),{
+          peminjam:peminjam,
+          barang:barang,
+          pinjam:{
+            waktu:serverTimestamp(),
+            staf: 'webscan'
+          },
+          kembali:null
+        });
       }
     });
   }
@@ -60,9 +64,6 @@ watch([peminjam,barang],function([p,b]){
       <label>Barang</label>
       <input v-model="barang" required>
       <button @click="ye">Pinjam!</button>
-    </div>
-    <div id="qr">
-      <canvas ref="qrcanv" />
     </div>
   </main>
   

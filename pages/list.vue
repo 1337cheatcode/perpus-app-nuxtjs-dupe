@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import {initializeApp} from "firebase/app";
-import {getFirestore, collection, query, where, Unsubscribe, getDocs, Timestamp, onSnapshot, doc, DocumentSnapshot} from "firebase/firestore";
+import {getFirestore, collection, query, where, Unsubscribe, getDocs, Timestamp, onSnapshot, doc, DocumentSnapshot, updateDoc, serverTimestamp, getDoc, addDoc} from "firebase/firestore";
 //declare namespace process { namespace env {const FIREBASE_CONFIG:string}};
 const db = getFirestore(initializeApp(JSON.parse(useRuntimeConfig().public.FIREBASE_CONFIG)));
 let snap:Unsubscribe;
@@ -13,25 +13,19 @@ const onSnap = (id:string)=>(d:DocumentSnapshot)=>{
   }
 }
 
-import {generate} from 'lean-qr';
 import { StyleValue } from "vue";
-const panjang = (id:string)=>{
-  if(snap)snap();
-  if(qrcanv.value!=undefined){
-    snap = onSnapshot(doc(db,'peminjaman barang',id),onSnap(id));
-    return generate(`x,${id}`).toCanvas(qrcanv.value);
-  }
-}
 const kembali = (id:string)=>{
   if(snap)snap();
-  if(qrcanv.value!=undefined){
-    snap = onSnapshot(doc(db,'peminjaman barang',id),onSnap(id));
-    return generate(`k,${id}`).toCanvas(qrcanv.value);
-  }
+  snap = onSnapshot(doc(db,'peminjaman barang',id),onSnap(id));
+  return updateDoc(doc(db,'peminjaman barang',id),{
+          kembali:{
+            waktu:serverTimestamp(),
+            staf: 'webscan'
+          }
+        });
 }
 
 import { ref } from "vue";
-const qrcanv = ref<HTMLCanvasElement>();
 const alldocs = ref((await getDocs(
                             query(
                               collection(db, 'peminjaman barang'),
@@ -127,14 +121,11 @@ function isTelat(waktu:Date){
             <td class="barang">{{ doc.data.barang }}</td>
             <td class="waktu" :style="deadlineBalik(doc.data.pinjam.waktu)">{{ tulisanTgl(doc.data.pinjam.waktu.toDate()) }}</td>
             <td class="telat" :style="deadlineBalik(doc.data.pinjam.waktu)"><mark v-if="isTelat(doc.data.pinjam.waktu.toDate())" style="background-color: black;">❌</mark></td>
-            <td class="aksi"><button @click="(e)=>panjang(doc.id)">+</button><button @click="(e)=>kembali(doc.id)">v</button></td>
+            <td class="aksi"><button @click="(e)=>kembali(doc.id)">v</button></td>
           </tr>
         </tbody>
       </table>
-      <span class="note">note: + perpanjang, v kembalikan</span>
-    </div>
-    <div id="qr">
-      <canvas ref="qrcanv"></canvas>
+      <span class="note">note: v kembalikan</span>
     </div>
   </main>
 </template>
